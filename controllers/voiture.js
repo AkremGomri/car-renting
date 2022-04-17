@@ -3,23 +3,32 @@ const Owner = require('../models/owner');
 
 
 exports.createVoiture = (req, res, next) => {
-  
-    console.log("d5alna");
-    delete req.body._id;
-    const voiture = new Voiture({
-      ...req.body
-    });
 
-    Owner.findOne({ _id: voiture.ownerID })
-    .then(owner => {
-      owner.voitures.push(voiture._id)
-      owner.save()
-    })
-    .catch(error => console.log(error));
+    const voiture = new Voiture({
+      ...req.body,
+      ownerID: req.auth.userId
+    });
+    console.log(voiture);
     voiture.save()
       .then(() => res.status(201).json({ message: 'Objet enregistréeeee !'}))
-      .catch(error => res.status(400).json({ error }));
+      .catch(error => {
+        console.log("eroooor ",error);
+        res.status(400).json({ error })});
+
+      Owner.findById( req.auth.userId )
+      .then(owner => {
+        if(owner === null){
+          console.log("utilis non trouvé ");
+          return res.status(400).json({ message: "owner non trouvée " })
+        }
+        owner.voitures.push(voiture._id)
+        owner.save()
+      })
+      .catch(error => console.log(error));
+
   };
+
+
 
   exports.getAllVoitures = (req, res, next) => {
     Voiture.find()
