@@ -2,6 +2,7 @@ const Client = require('../models/client');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { clientSignUp } = require('../helpers/validation_schema');
+
 // exports.createClient = (req, res, next) => {
 //     delete req.body._id;
 //     const client = new Client({
@@ -65,7 +66,7 @@ const { clientSignUp } = require('../helpers/validation_schema');
             })
             .catch(error => 
               {
-                console.log("Mongo Db incapable de savegarder avec erreur:  ", error);
+                console.log(" incapable de savegarder avec erreur:  ", error);
                 res.status(400).json({  error: error.message })
               }
             );

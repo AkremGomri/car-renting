@@ -7,7 +7,7 @@ const voitureSchema = mongoose.Schema({
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
   prix_par_heure: { type: Number, required: true },
-  color: {type: String, required: true},
+  color: {type: String},
   ownerID: {type: Schema.Types.ObjectId, ref:'Owner', required: true}
 });
 

@@ -8,7 +8,7 @@ const ownerSchema = mongoose.Schema({
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
     Email: { type: String, required: true, unique: true },
-    telephone: { type: Number, required: true },
+    telephone: { type: String, required: true },
     addresse: { type: String, required: true },
     CIN: { type: Number, required: true, unique: true },
     date_de_naissance: { type: Date, required: true },

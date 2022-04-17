@@ -4,16 +4,6 @@ const bcrypt = require('bcryptjs/dist/bcrypt');
 const jwt = require('jsonwebtoken')
 const { ownerSignUp } = require('../helpers/validation_schema');
 
-// exports.createOwner = (req, res, next) => {
-//     delete req.body._id;
-//     const owner = new Owner({
-//       ...req.body
-//     });
-//     owner.save()
-//       .then(() => res.status(201).json({ message: 'Objet enregistréeeee !'}))
-//       .catch(error => res.status(400).json({ error }));
-//   };
-
   exports.getAllOwner = (req, res, next) => {
     Owner.find()
       .then(owner => {res.status(200).json(owner)})
@@ -34,17 +24,62 @@ const { ownerSignUp } = require('../helpers/validation_schema');
     };
     
     exports.modifyOwner = (req, res, next) => {
-        Owner.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-          .then(() => {
-            if( req.auth.userId != req.params.id){
-              return res.status(401).json({ error: new Error('Requete non autorisée')});
-            }  
-            res.status(200).json({ message: 'Objet modifié !'})
+      Owner.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+        .then(() => {
+          if( req.auth.userId != req.params.id){
+            return res.status(401).json({ error: new Error('Requete non autorisée')});
+          }  
+          res.status(200).json({ message: 'Objet modifié !'})
+      })
+        .catch(error => res.status(400).json({ error }));
+    }
+
+    exports.ModifyMe = (req, res, next) => {
+      console.log("h1");
+      Owner.findByIdAndUpdate(req.auth.userId, {
+        pseudo: req.body.pseudo,
+        entrepriseName: req.body.entrepriseName,
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        Email: req.body.Email,
+        telephone: req.body.telephone,
+        addresse: req.body.addresse,
+        CIN: req.body.CIN,
+        date_de_naissance: req.body.date_de_naissance
         })
-          .catch(error => res.status(400).json({ error }));
-      }
+        .then(() => {
+          console.log("h2");
+          res.status(200).json({ message: 'Objet modifié !'})
+      })
+        .catch(error => {
+          console.log("h3");
+          res.status(400).json({ error })
+      });
+    }
+
+    exports.getMyProfile = (req, res, next) => {
+      Owner.findById( req.auth.userId )
+        .then((owner) => {
+          res.status(200).json({
+            pseudo: owner.pseudo,
+            entrepriseName: owner.entrepriseName,
+            nom: owner.nom, 
+            prenom: owner.prenom, 
+            Email: owner.Email, 
+            telephone: owner.telephone, 
+            addresse: owner.addresse, 
+            CIN: owner.CIN,
+            date_de_naissance: owner.date_de_naissance,
+            voitures: owner.voitures
+          })
+      })
+        .catch(error => res.status(400).json({ error }));
+    }
 
       exports.deleteOwner = (req, res, next) => {
+        if( req.auth.userId != req.params.id){
+          return res.status(401).json({ error: new Error('Requete non autorisée')});
+        }  
         Owner.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
@@ -68,6 +103,7 @@ const { ownerSignUp } = require('../helpers/validation_schema');
       //     console.log("hi ", req.params.id);
       //     console.log(owner.voitures[0]);
       //     const ow = owner.populate('voitures').execPopulate();
+      //     ow.save()
       //     log('hello ', ow)
       //     console.log(ow);
       //     res.status(200).json(ow)
@@ -75,13 +111,12 @@ const { ownerSignUp } = require('../helpers/validation_schema');
       //   .catch(error => res.status(400).json({ error }));
       // };
 
-      exports.getMyCars = (req, res, next) => {
+      exports.getOwnerCarsById = (req, res, next) => {
         Voiture.find()
         .then(voitures => {
           const voi = voitures.filter(voiture => 
             voiture.ownerID == req.params.id
           )
-          console.log(voi);
           res.status(200).json(voi)
         })
         .catch(error => {
@@ -106,9 +141,13 @@ const { ownerSignUp } = require('../helpers/validation_schema');
           });
           owner.save()
             .then(() => res.status(201).json({ message: 'Objet enregistréeeee !'}))
-            .catch(error => res.status(400).json({ error : new Error('problem lenna') }));
+            .catch(error => {
+              err = error.message.split(' ')[11];
+              err = err.substring(0, err.length-1);
+              console.log(err);
+              res.status(400).json({ message: 'problem coté la base de donnée', err })});
         })
-        .catch( error => res.status(500).json({error : new Error('problem de hashage')})
+        .catch( error => res.status(500).json({message : 'problem de hashage'})
         )}
 
       exports.signIn = (req, res, next) => {
