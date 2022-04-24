@@ -3,12 +3,20 @@ const Reservation = require('../models/reservation');
 exports.createReservation = (req, res, next) => {
     delete req.body._id;
     var reservation = new Reservation({
-      ...req.body
+      ...req.body,
+      idClient: req.auth.userId
     });
     reservation.save()
       .then(() => res.status(201).json({ message: 'Objet enregistréeeee !'}))
-      .catch(error => res.status(400).json({ error }));
+      .catch(error => {
+        console.log(error);
+        err = error.message.split(' ')[11];
+        err = err.substring(0, err.length-1);
+        error = (err === "idClient")? "reservation allready taken" : error;
+        res.status(400).json({ message: error, err })});
   };
+
+
 
   exports.getAllReservations = (req, res, next) => {
     Reservation.find()
@@ -38,6 +46,7 @@ exports.createReservation = (req, res, next) => {
       };
 
       exports.deleteAllReservation = (req, res, next) => {
+        Reservation.collection.deleteMany({});
         Reservation.deleteMany({})
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));

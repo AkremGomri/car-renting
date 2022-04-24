@@ -1,6 +1,8 @@
 const Voiture = require('../models/voiture');
+const Reservation = require('../models/reservation');
 const Owner = require('../models/owner');
 
+ObjectId = require('mongodb').ObjectID;
 
 exports.createVoiture = (req, res, next) => {
 
@@ -73,3 +75,33 @@ exports.createVoiture = (req, res, next) => {
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       };
+
+      exports.availableCarsByDate = async(req, res, next) => {
+        const reservations = await Reservation.find({ DateMin: req.params.DateMin , DateMax: req.params.DateMax })
+        var allCars = [];
+        reservations.map((reservation) => {
+          // console.log(reservation.idVoiture);
+          allCars.push(reservation.idVoiture)
+        })
+        // console.log("all cars ", allCars);
+        // console.log("to string ",allCars.toString());
+        // console.log("to string ",allCars.toString().split(','));
+
+        // // Voiture.find().where('_id').in(allCars).exec((err, records) => {});
+        // // const records = await Model.find().where('_id').in(allCars).exec();
+        // const voitures = await Voiture.find().where('matricule').in(allCars).exec();
+        // // const voitures = await Voiture.find({ '_id': { $in: allCars } });
+        // console.log("voitures1 :",voitures);
+        allCars = allCars.toString().split(',')
+        Voiture.find()
+          .then( voitures => {
+            var v = voitures.filter((voiture) => {
+              return !allCars.includes(voiture._id.toString()); 
+            })
+            res.status(200).json(v)
+          }).catch(err => {
+            res.status(400).json({ err })
+          })
+      };
+  
+    

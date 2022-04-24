@@ -5,6 +5,7 @@ const auth = require('../middleware/auth')
 // const multer = require('../middleware/multer-config');
 
 router.post('/', auth, Voiture.createVoiture);
+router.get('/:DateMin/:DateMax', Voiture.availableCarsByDate);
 router.get('/', Voiture.getAllVoitures);
 router.get('/:matricule', Voiture.getOneVoiture);
 router.put('/:matricule',auth, Voiture.modifyVoiture);
