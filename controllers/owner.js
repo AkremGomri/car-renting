@@ -35,7 +35,6 @@ const { ownerSignUp } = require('../helpers/validation_schema');
     }
 
     exports.ModifyMe = (req, res, next) => {
-      console.log("h1");
       Owner.findByIdAndUpdate(req.auth.userId, {
         pseudo: req.body.pseudo,
         entrepriseName: req.body.entrepriseName,
@@ -48,11 +47,9 @@ const { ownerSignUp } = require('../helpers/validation_schema');
         date_de_naissance: req.body.date_de_naissance
         })
         .then(() => {
-          console.log("h2");
           res.status(200).json({ message: 'Objet modifié !'})
       })
         .catch(error => {
-          console.log("h3");
           res.status(400).json({ error })
       });
     }

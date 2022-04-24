@@ -29,9 +29,22 @@ const clientSignUp = Joi.object({
     motDePasse: Joi.string().alphanum().min(6).max(10).required()
   });
 
+const reservation = Joi.object({
+    idClient: Joi.string().required(),
+    idVoiture: Joi.string().required(),
+    DateMin: Joi.date().required(),
+    DateMax: Joi.date().required(),
+    lieuxDeLivraison: Joi.string(),
+    Options: Joi.array().items(Joi.string()),    
+    OptionSupplementaires: Joi.string(),    
+    IsDelivred: Joi.boolean(),
+    IsGivenBack: Joi.boolean,
+});
+
 
   module.exports = {
     clientSignUp,
     clientSignIn,
-    ownerSignUp
+    ownerSignUp,
+    reservation
   }
