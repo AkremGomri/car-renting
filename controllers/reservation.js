@@ -6,6 +6,7 @@ exports.createReservation = (req, res, next) => {
     const DateMax = new Date( req.body.dateRet);
     console.log(DateMin);
     console.log(DateMax);
+    console.log("req.body.idVoiture ",req.body.idVoiture);
     var reservation = new Reservation({
       ...req.body,
       idVoiture: req.body.idVoiture,
@@ -17,8 +18,8 @@ exports.createReservation = (req, res, next) => {
       .then(() => res.status(201).json({ message: 'Objet enregistréeeee !'}))
       .catch(error => {
         console.log(error);
-        err = error.message.split(' ')[11];
-        err = err.substring(0, err.length-1);
+        var err = error.message.split(' ')[11];
+        // err = err.substring(0, err.length-1);
         error = (err === "idClient")? "reservation allready taken" : error;
         res.status(400).json({ message: error, err })});
   };

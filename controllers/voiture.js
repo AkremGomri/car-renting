@@ -81,7 +81,9 @@ exports.createVoiture = (req, res, next) => {
         const dateRet = new Date(req.params.DateMax);
         console.log(dateDep);
         console.log(dateRet);
-        const reservations = await Reservation.find({ DateMin: {$gte: dateDep} , DateMax: {$lte: dateRet} })
+        var reservations = await Reservation.find({ DateMin: {$gte: dateDep} , DateMin: {$lte: dateRet} });
+        var reservations1 = await Reservation.find({ DateMax: {$gte: dateDep} , DateMax: {$lte: dateRet} });
+        reservations = reservations.concat(reservations1)
         var allCars = [];
         console.log("reservations ",reservations);
         reservations.map((reservation) => {
