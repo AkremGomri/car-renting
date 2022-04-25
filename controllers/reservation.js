@@ -2,8 +2,15 @@ const Reservation = require('../models/reservation');
 
 exports.createReservation = (req, res, next) => {
     delete req.body._id;
+    const DateMin = new Date(req.body.dateDep);
+    const DateMax = new Date( req.body.dateRet);
+    console.log(DateMin);
+    console.log(DateMax);
     var reservation = new Reservation({
       ...req.body,
+      idVoiture: req.body.idVoiture,
+      DateMin,
+      DateMax,
       idClient: req.auth.userId
     });
     reservation.save()
