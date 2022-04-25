@@ -77,21 +77,16 @@ exports.createVoiture = (req, res, next) => {
       };
 
       exports.availableCarsByDate = async(req, res, next) => {
-        const reservations = await Reservation.find({ DateMin: req.params.DateMin , DateMax: req.params.DateMax })
+        const dateDep = new Date(req.params.DateMin);
+        const dateRet = new Date(req.params.DateMax);
+        console.log(dateDep);
+        console.log(dateRet);
+        const reservations = await Reservation.find({ DateMin: {$gte: dateDep} , DateMax: {$lte: dateRet} })
         var allCars = [];
+        console.log("reservations ",reservations);
         reservations.map((reservation) => {
-          // console.log(reservation.idVoiture);
           allCars.push(reservation.idVoiture)
         })
-        // console.log("all cars ", allCars);
-        // console.log("to string ",allCars.toString());
-        // console.log("to string ",allCars.toString().split(','));
-
-        // // Voiture.find().where('_id').in(allCars).exec((err, records) => {});
-        // // const records = await Model.find().where('_id').in(allCars).exec();
-        // const voitures = await Voiture.find().where('matricule').in(allCars).exec();
-        // // const voitures = await Voiture.find({ '_id': { $in: allCars } });
-        // console.log("voitures1 :",voitures);
         allCars = allCars.toString().split(',')
         Voiture.find()
           .then( voitures => {
