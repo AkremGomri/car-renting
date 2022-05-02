@@ -23,6 +23,7 @@ exports.createReservation = async(req, res, next) => {
       /***************************  ***************************/
     const DateMin = new Date(req.body.dateDep);
     const DateMax = new Date( req.body.dateRet);
+
     var reservation = new Reservation({
       ...req.body,
       idVoiture: req.body.idVoiture,
@@ -37,8 +38,8 @@ exports.createReservation = async(req, res, next) => {
     })
       .catch(error => {
         console.log(error);
-        err = error.message.split(' ')[11];
-        err = err.substring(0, err.length-1);
+        var err = error.message.split(' ')[11];
+        // err = err.substring(0, err.length-1);
         error = (err === "idClient")? "reservation allready taken" : error;
         res.status(400).json({ message: error, err })});
   };

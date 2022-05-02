@@ -84,6 +84,7 @@ exports.createVoiture = (req, res, next) => {
 
         reservations = reservations.concat(reservations1);
         
+
         var allCars = [];
  
         reservations.map((reservation) => {
