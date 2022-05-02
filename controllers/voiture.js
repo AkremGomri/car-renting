@@ -48,7 +48,6 @@ exports.createVoiture = (req, res, next) => {
     exports.modifyVoiture = (req, res, next) => {
       Voiture.findOne({ matricule: req.params.matricule })
       .then( voiture => {
-        console.log("wsolt");
         if( req.auth.userId != voiture.ownerID){
           return res.status(401).json({ error: new Error('Requete non autorisée')});
         }
@@ -79,11 +78,14 @@ exports.createVoiture = (req, res, next) => {
       exports.availableCarsByDate = async(req, res, next) => {
         const dateDep = new Date(req.params.DateMin);
         const dateRet = new Date(req.params.DateMax);
-        console.log(dateDep);
-        console.log(dateRet);
-        const reservations = await Reservation.find({ DateMin: {$gte: dateDep} , DateMax: {$lte: dateRet} })
+
+        var reservations = await Reservation.find({ DateMin: {$gte: dateDep, $lte: dateRet} })
+        var reservations1 = await Reservation.find({ DateMax: {$gte: dateDep, $lte: dateRet} })
+
+        reservations = reservations.concat(reservations1);
+        
         var allCars = [];
-        console.log("reservations ",reservations);
+ 
         reservations.map((reservation) => {
           allCars.push(reservation.idVoiture)
         })
