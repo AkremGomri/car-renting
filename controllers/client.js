@@ -13,6 +13,17 @@ const { clientSignUp } = require('../helpers/validation_schema');
 //       .catch(error => res.status(400).json({ error }));
 //   };
 
+exports.ajouterImage = (req, res) => {
+  const clientObject = JSON.parse(req.body.client);
+  Client.findByIdAndUpdate(
+    req.params.id,
+    {...clientObject,
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    },
+    { new: true },
+  )
+}
+
   exports.getAllClient = (req, res, next) => {
     Client.find()
       .then(client => {res.status(200).json(client)})
@@ -26,7 +37,15 @@ const { clientSignUp } = require('../helpers/validation_schema');
     };
     
     exports.modifyClient = (req, res, next) => {
-        Client.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+      console.log("je suis un client");
+      const clientObject = req.file ?
+      {
+        ...req.body,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      } : { ...req.body };
+
+
+        Client.updateOne({ _id: req.params.id }, { ...clientObject, _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet modifié !'}))
           .catch(error => res.status(400).json({ error }));
       }

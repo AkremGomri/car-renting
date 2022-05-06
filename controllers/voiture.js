@@ -2,7 +2,6 @@ const Voiture = require('../models/voiture');
 const Reservation = require('../models/reservation');
 const Owner = require('../models/owner');
 
-ObjectId = require('mongodb').ObjectID;
 
 exports.createVoiture = (req, res, next) => {
 
@@ -48,7 +47,6 @@ exports.createVoiture = (req, res, next) => {
     exports.modifyVoiture = (req, res, next) => {
       Voiture.findOne({ matricule: req.params.matricule })
       .then( voiture => {
-        console.log("wsolt");
         if( req.auth.userId != voiture.ownerID){
           return res.status(401).json({ error: new Error('Requete non autorisée')});
         }
@@ -77,15 +75,23 @@ exports.createVoiture = (req, res, next) => {
       };
 
       exports.availableCarsByDate = async(req, res, next) => {
-        const dateDep = new Date(req.params.DateMin);
-        const dateRet = new Date(req.params.DateMax);
-        console.log(dateDep);
-        console.log(dateRet);
-        var reservations = await Reservation.find({ DateMin: {$gte: dateDep} , DateMin: {$lte: dateRet} });
-        var reservations1 = await Reservation.find({ DateMax: {$gte: dateDep} , DateMax: {$lte: dateRet} });
-        reservations = reservations.concat(reservations1)
+        var dateDep = new Date(req.params.DateMin);
+        var dateRet = new Date(req.params.DateMax);
+
+        const secDep = dateDep.setHours(dateDep.getHours() - 1 );
+        dateDep = new Date(secDep).toLocaleString('en-US',{timeZone:'UTC'});
+
+        const secRet = dateRet.setHours(dateRet.getHours() + 1 );
+        dateRet = new Date(secRet).toLocaleString('en-US',{timeZone:'UTC'});
+
+        var reservations = await Reservation.find({ DasteMin: {$gte: dateDep, $lte: dateRet} })
+        var reservations1 = await Reservation.find({ DateMax: {$gte: dateDep, $lte: dateRet} })
+
+        reservations = reservations.concat(reservations1);
+        
+
         var allCars = [];
-        console.log("reservations ",reservations);
+ 
         reservations.map((reservation) => {
           allCars.push(reservation.idVoiture)
         })

@@ -15,7 +15,8 @@ const ownerSchema = mongoose.Schema({
     entrepriseName: { type: String, required: true, unique: true },
     voitures:[
         { type: Schema.Types.ObjectId, ref: 'Voiture' }
-      ]
+      ],
+      imageUrl: { type: String }
 });
 
 module.exports = mongoose.model('Owner', ownerSchema);
