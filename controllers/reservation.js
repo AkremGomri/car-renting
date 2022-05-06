@@ -56,7 +56,11 @@ exports.createReservation = async(req, res, next) => {
       .populate("idVoiture")
       .populate('idClient')
       .exec((err,reservation) => {
-          res.status(200).json(reservation);
+        const nb_heure = (reservation.DateMax - reservation.DateMin)/(3600*1000);
+        const prix_par_heure = reservation.idVoiture.prix_par_heure ;
+        const prix_totale = nb_heure * prix_par_heure;
+        
+          res.status(200).json({reservation, prixTotale: prix_totale});
         })
     };
     

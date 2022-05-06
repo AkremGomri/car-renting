@@ -7,6 +7,7 @@ const reservationSchema = mongoose.Schema({
     DateMin: { type: Date, required: true },
     DateMax: { type: Date, required: true },
     lieuxDeLivraison: { type: String },
+    lieuxDeRecuperation: { type: String },
     Options: [ String ],    
     OptionSupplementaires: { type: String },    
     IsDelivred: { type: Boolean, default: false },

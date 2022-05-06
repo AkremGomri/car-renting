@@ -11,6 +11,7 @@ const cors = require('cors');
 const BDUserName = 'Akrem';
 const BDPassWord = 'Banlieu13';
 const DataBase = 'rentCar';
+const path = require('path');
 
 mongoose.connect('mongodb+srv://' + BDUserName + ':' + BDPassWord + '@rentcar.zwazg.mongodb.net/' + DataBase + '?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
   });
 
 app.use(express.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/voiture',voitureRoutes);
 app.use('/api/owner',ownerRoutes);
 app.use('/api/client',clientRoutes);

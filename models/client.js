@@ -8,7 +8,8 @@ const clientSchema = mongoose.Schema({
     Email: { type: String, required: true, unique: true },
     telephone: { type: String, required: true },
     CIN: { type: Number, required: true, unique: true },
-    date_de_naissance: { type: Date, required: true }
+    date_de_naissance: { type: Date, required: true },
+    imageUrl: { type: String }
 });
 
 module.exports = mongoose.model('Client', clientSchema);

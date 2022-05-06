@@ -24,7 +24,15 @@ const { ownerSignUp } = require('../helpers/validation_schema');
     };
     
     exports.modifyOwner = (req, res, next) => {
-      Owner.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+      console.log(req);
+      console.log("req.file: ",req.file);
+
+      const ownerObject = req.file ?
+      {
+        ...req.body,
+        imageUrl: `${req.protocol}://${req.get('host')}/imagess/${req.file.filename}`
+      } : { ...req.body };
+      Owner.updateOne({ _id: req.params.id }, { ...ownerObject, _id: req.params.id })
         .then(() => {
           if( req.auth.userId != req.params.id){
             return res.status(401).json({ error: new Error('Requete non autorisée')});
